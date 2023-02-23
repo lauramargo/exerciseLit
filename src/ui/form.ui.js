@@ -1,10 +1,8 @@
-
 import { html, LitElement, css } from "lit";
-
+import './../ui/posts.ui';
 export class MyForm extends LitElement {
     static get properties() {
       return {
-        
         titleValue: { type: String },
         bodyValue: { type: String },
         visible: { type: Boolean },
@@ -12,14 +10,12 @@ export class MyForm extends LitElement {
     }
     constructor() {
       super();
-      
       this.titleValue = '';
       this.bodyValue = '';
       this.visible = false;
     }
     static get styles() {
       return css`
-      
         :host {
           display: block;
           padding: 10px;
@@ -30,14 +26,13 @@ export class MyForm extends LitElement {
         }
         .formBox__text {
           width: 300px;
-          
         }
-       
 .formBox__btn {
   padding: 5px 5px;
+  color: white;
     min-width: 100px;
-    background-color: var(--color-positive);
-    border: 1px solid var(--color-grey-light-2);
+    background-color: var(--color-grey-dark-2);
+    border: 1px solid var(--color-grey);
     border-radius: 1.5rem;
     cursor: pointer;
     font-size: var(--font-size-button);
@@ -48,24 +43,19 @@ export class MyForm extends LitElement {
     background-color: var(--color-primary);
     color: var(--color-positive);
   }
-
   .disabled-btn {
     cursor: initial;
     background-color: var(--color-grey-light-2);
     color: var(--color-grey);
   }
-
   .disabled-btn:hover {
     background-color: var(--color-grey-light-2);
     color: var(--color-grey);
-  } 
+  }
       `;
     }
-
-    
     render() {
       return html`
-        
         <div class="formBox">
           <h2>Post Detail</h2>
           <label for="title-input">Title:</label>
@@ -78,12 +68,13 @@ export class MyForm extends LitElement {
           </div>
       `;
     }
-    
     _handleTitleInput(event) {
       this.titleValue = event.target.value;
+      this.dispatchEvent(new CustomEvent('title-change', { detail: this.titleValue }));
     }
     _handleBodyInput(event) {
       this.bodyValue = event.target.value;
+      this.dispatchEvent(new CustomEvent('body-change', { detail: this.bodyValue }));
     }
     _onCreateClick() {
       fetch('https://jsonplaceholder.typicode.com/posts', {
@@ -99,13 +90,13 @@ export class MyForm extends LitElement {
       .then(response => response.json())
       .then(data => {
         console.log('Post created:', data);
-        // Restablecer los valores de los inputs después de que el post haya sido creado 
+        // Restablecer los valores de los inputs después de que el post haya sido creado
         this.titleValue = '';
       this.bodyValue = '';
       })
     }
     _handleCancel() {
-      this.isFormEnabled = false;
+      this.visible = false;
       this.titleValue = '';
       this.bodyValue = '';
     }

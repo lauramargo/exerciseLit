@@ -30,7 +30,7 @@ export class PostsComponent extends LitElement {
         return html`
             <button @click="${this.allOdds}" id="oddAction">Odd</button>
             <posts-ui .posts="${this.posts}"></posts-ui>
-            <form-ui></form-ui>
+            
         `;
     }
 
