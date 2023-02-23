@@ -2,67 +2,112 @@
 import { html, LitElement, css } from "lit";
 
 export class MyForm extends LitElement {
+    static get properties() {
+      return {
+        
+        titleValue: { type: String },
+        bodyValue: { type: String },
+        visible: { type: Boolean },
+      };
+    }
+    constructor() {
+      super();
+      
+      this.titleValue = '';
+      this.bodyValue = '';
+      this.visible = false;
+    }
+    static get styles() {
+      return css`
+      
+        :host {
+          display: block;
+          padding: 10px;
+        }
+        input, textarea {
+          margin-bottom: 10px;
+          display: block;
+        }
+        .formBox__text {
+          width: 300px;
+          
+        }
+       
+.formBox__btn {
+  padding: 5px 5px;
+    min-width: 100px;
+    background-color: var(--color-positive);
+    border: 1px solid var(--color-grey-light-2);
+    border-radius: 1.5rem;
+    cursor: pointer;
+    font-size: var(--font-size-button);
+    line-height: var(--line-height-button);
+    box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+}
+.btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-positive);
+  }
+
+  .disabled-btn {
+    cursor: initial;
+    background-color: var(--color-grey-light-2);
+    color: var(--color-grey);
+  }
+
+  .disabled-btn:hover {
+    background-color: var(--color-grey-light-2);
+    color: var(--color-grey);
+  } 
+      `;
+    }
+
     
-static get properties() {
-  return {
-    post: { type: Object },
-    editing: { type: Boolean },
-    title: { type: String },
-    body: { type: String },
-  };
-}
-constructor() {
-  super();
-  this.post = null;
-  this.editing = false;
-  this.title = '';
-  this.body = '';
-}
-render() {
-  return html`
-    <h2>${this.editing ? 'Edit post' : 'New post'}</h2>
-    <form>
-      <label>
-        Title:
-        <input type="text" name="title" .value="${this.title}" @input="${(e) => this.title = e.target.value}">
-      </label>
-      <label>
-        Body:
-        <input type="text" name="body" .value="${this.body}" @input="${(e) => this.body = e.target.value}">
-      </label>
-      <button type="button" @click="${() => this.save()}">${this.editing ? 'Save' : 'Create'}</button>
-      ${this.editing ? html`
-        <button type="button" @click="${() => this.dispatchEvent(new CustomEvent('cancel'))}">Cancel</button>
-        <button type="button" @click="${() => this.delete()}">Delete</button>
-      ` : ''}
-    </form>
-  `;
-}
-updated(changedProperties) {
-  if (changedProperties.has('post')) {
-    this.title = this.post?.title || '';
-    this.body = this.post?.body || '';
+    render() {
+      return html`
+        
+        <div class="formBox">
+          <h2>Post Detail</h2>
+          <label for="title-input">Title:</label>
+          <input class="formBox__text" type="text" id="title-input" placeholder="Titulo" .value="${this.titleValue}" @input="${this._handleTitleInput}" />
+          <label for="body-input">Body:</label>
+          <textarea class="formBox__text" id="body-input" placeholder="descripción" .value="${this.bodyValue}" @input="${this._handleBodyInput}" ></textarea>
+          <button class="formBox__btn" id="crear-btn" @click=${this._onCreateClick}>Crear</button>
+          <button class="formBox__btn" id="cancelar-btn" @click=${this._handleCancel}>Cancelar</button>
+          <button class="formBox__btn" id="borrar-btn" @click=${this._handleDelete}>Delete</button>
+          </div>
+      `;
+    }
+    
+    _handleTitleInput(event) {
+      this.titleValue = event.target.value;
+    }
+    _handleBodyInput(event) {
+      this.bodyValue = event.target.value;
+    }
+    _onCreateClick() {
+      fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: this.titleValue,
+        body: this.bodyValue,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Post created:', data);
+        // Restablecer los valores de los inputs después de que el post haya sido creado 
+        this.titleValue = '';
+      this.bodyValue = '';
+      })
+    }
+    _handleCancel() {
+      this.isFormEnabled = false;
+      this.titleValue = '';
+      this.bodyValue = '';
+    }
   }
-}
-save() {
-  if (!this.title || !this.body) {
-    alert('Please enter a title and a body for the post');
-    return;
-  }
-  this.dispatchEvent(new CustomEvent('save', { detail: { title: this.title, body: this.body } }));
-  this.clearForm();
-}
-clearForm() {
-  this.title = '';
-  this.body = '';
-}
-delete() {
-  if (!confirm('Are you sure you want to delete this post?')) {
-    return;
-  }
-  this.dispatchEvent(new CustomEvent('delete', { detail: this.post.id }));
-  this.clearForm();
-}
-}
-  
   customElements.define('form-ui', MyForm);

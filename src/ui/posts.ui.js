@@ -4,66 +4,59 @@ export class PostsUI extends LitElement {
 
     static get properties() {
         return {
-          posts: { type: Array },
-          selectedPostId: { type: Number },
-          editing: { type: Boolean },
-        };
-      }
-      constructor() {
-        super();
-        this.posts = [
-          { id: 1, title: 'Post 1', body: 'Body of post 1' },
-          { id: 2, title: 'Post 2', body: 'Body of post 2' },
-          { id: 3, title: 'Post 3', body: 'Body of post 3' },
-        ];
-        this.selectedPostId = null;
-        this.editing = false;
-      }
-      render() {
-        return html`
-          <ul>
-            ${this.posts.map(post => html`
-              <li @click="${() => this.selectPost(post.id)}">${post.title}</li>
-            `)}
-          </ul>
-          <button @click="${() => this.dispatchEvent(new CustomEvent('add-post'))}">Add</button>
-          ${this.editing ? html`
-            <form-component
-              .post="${this.getSelectedPost()}"
-              .editing="${this.editing}"
-              @save="${(e) => this.savePost(e.detail)}"
-              @cancel="${() => this.cancelEdit()}">
-            </form-component>
-          ` : ''}
-        `;
-      }
-      selectPost(postId) {
-        this.selectedPostId = postId;
-        this.editing = true;
-        this.requestUpdate();
-      }
-      getSelectedPost() {
-        return this.posts.find(post => post.id === this.selectedPostId);
-      }
-      savePost(postData) {
-        if (this.editing) {
-          const index = this.posts.findIndex(post => post.id === this.selectedPostId);
-          this.posts[index] = { ...this.getSelectedPost(), ...postData };
-        } else {
-          const newPostId = Math.max(...this.posts.map(post => post.id)) + 1;
-          this.posts.push({ id: newPostId, ...postData });
+            posts: { type: Array},
+            formVisible: { type: Boolean },
+            selectedPost: { type: Object },
+            
+            
         }
-        this.editing = false;
-        this.selectedPostId = null;
-        this.requestUpdate();
+    }
+    constructor() {
+        super();
+        this.posts = [];
+    this.formVisible = false;
+    this.selectedPost = null;
+       
       }
-      cancelEdit() {
-        this.editing = false;
-        this.selectedPostId = null;
-        this.requestUpdate();
+      _onPostClick(post) {
+        this.selectedPost = post;
+        this.formVisible = true;
       }
+      
+
+      
+
+    render() {
+        return html`
+        <div class="postBox">
+        <section class="postBox__list">
+        <h2>Posts List</h2>
+        <button @click="${this._onAddClick}">Add</button>
+        <div ?hidden=${!this.isFormEnabled}></div>
+
+            <ul id="posts">
+            ${this.posts && this.posts.map((post) => html`
+                <li @click="${() => this._onPostClick(post)}" class="post" id="post_${post.id}">
+                    ${post.id} -- ${post.title}
+                </li>
+            `)}
+            </ul>
+            </section>
+            <section class="postBox__list">
+            <form-ui .visible="${this.formVisible}" .selectedPost="${this.selectedPost}"></form-ui>
+            </section>
+            </div>
+            
+        `;
+    }
+    _handleAdd() {
+        this.isFormEnabled = true;
+      }
+
+    createRenderRoot() {
+        return this;
     }
 
-
+}
 
 customElements.define('posts-ui', PostsUI);

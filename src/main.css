@@ -1,9 +1,18 @@
 body {
-    background-color: grey;
+    background-color: rgb(210, 207, 207);
 }
 
 :root {
     --color-poc: tomato;
+    --color-text-primary: #4d4d4e;
+    --color-text-secondary: #4d4d4e;
+    --color-text-tertiary: #656566;
+    /* $$ Gray scale */
+    --color-grey: #b4b4b4;
+    --color-grey-light: #d2d2d2;
+    --color-grey-light-2: #f2f2f2;
+    --color-grey-dark: #727272;
+    --color-grey-dark-2: #575756;
 }
 
 app-element::part(hello) {
@@ -12,4 +21,8 @@ app-element::part(hello) {
 
 app-element p {
     font-size: x-large;
+}
+.postBox {
+display:flex;
+
 }
