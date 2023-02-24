@@ -1,27 +1,26 @@
 import { html, LitElement } from "lit";
-import "./../ui/form.ui";
+import "../components/form.component";
 export class PostsUI extends LitElement {
   static get properties() {
     return {
       posts: { type: Array },
-      formVisible: { type: Boolean },
+      titleValue: { type: String },
+      bodyValue: { type: String },
+      
       selectedPost: { type: Object },
     };
   }
   constructor() {
     super();
     this.posts = [];
-    this.formVisible = false;
-    this.selectedPost = null;
+    
+    
   }
   _onPostClick(post) {
     this.selectedPost = post;
-    this.formVisible = true;
+    
   }
-  addPost(post) {
-    this.posts = [...this.posts, post];
-    this.requestUpdate();
-  }
+  
   render() {
     return html`
       <div class="postBox">
@@ -32,23 +31,27 @@ export class PostsUI extends LitElement {
             ${this.posts &&
             this.posts.map(
               (post) => html`
+              <a  href="#" @click="${() => this._onPostClick(post)}">
                 <li
-                  @click="${() => this._onPostClick(post)}"
+                  
                   class="post"
                   id="post_${post.id}"
                 >
-                  ${post.id} -- ${post.title}
+                  ${post.id}  ${post.title} ${post.body}
                 </li>
+                </a>
               `
             )}
+           
           </ul>
         </section>
         <section class="postBox__list">
-          <form-ui
-            ?hidden="${this.formVisible}"
+          <form-component
+            
             .selectedPost="${this.selectedPost}"
-            @post-created="${this.addPost}"
-          ></form-ui>
+            
+            @post-change="${this.createPost}"
+          ></form-component>
         </section>
       </div>
     `;
@@ -56,8 +59,13 @@ export class PostsUI extends LitElement {
   _onAddClick() {
     this.formVisible = true;
   }
+  createPost(e) {
+    const newPost = e.detail;
+    this.posts = [...this.posts, newPost];
+  }
   createRenderRoot() {
     return this;
   }
+
 }
 customElements.define("posts-ui", PostsUI);

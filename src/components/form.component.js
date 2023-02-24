@@ -1,18 +1,20 @@
 import { html, LitElement, css } from "lit";
-import './../ui/posts.ui';
+import '../ui/posts.ui';
 export class MyForm extends LitElement {
     static get properties() {
       return {
+        
         titleValue: { type: String },
         bodyValue: { type: String },
-        visible: { type: Boolean },
+        
       };
     }
     constructor() {
       super();
+      
       this.titleValue = '';
       this.bodyValue = '';
-      this.visible = false;
+      
     }
     static get styles() {
       return css`
@@ -59,9 +61,9 @@ export class MyForm extends LitElement {
         <div class="formBox">
           <h2>Post Detail</h2>
           <label for="title-input">Title:</label>
-          <input class="formBox__text" type="text" id="title-input" placeholder="Titulo" .value="${this.titleValue}" @input="${this._handleTitleInput}" />
+          <input class="formBox__text" type="text" id="title-input" placeholder="Titulo" .value="${this.titleValue}" @input="${this._handleTitleInput}"/>
           <label for="body-input">Body:</label>
-          <textarea class="formBox__text" id="body-input" placeholder="descripción" .value="${this.bodyValue}" @input="${this._handleBodyInput}" ></textarea>
+          <input class="formBox__text" id="body-input" placeholder="descripción" .value="${this.bodyValue}" @input="${this._handleBodyInput}"/>
           <button class="formBox__btn" id="crear-btn" @click=${this._onCreateClick}>Crear</button>
           <button class="formBox__btn" id="cancelar-btn" @click=${this._handleCancel}>Cancelar</button>
           <button class="formBox__btn" id="borrar-btn" @click=${this._handleDelete}>Delete</button>
@@ -70,35 +72,33 @@ export class MyForm extends LitElement {
     }
     _handleTitleInput(event) {
       this.titleValue = event.target.value;
-      this.dispatchEvent(new CustomEvent('title-change', { detail: this.titleValue }));
+      
     }
     _handleBodyInput(event) {
       this.bodyValue = event.target.value;
-      this.dispatchEvent(new CustomEvent('body-change', { detail: this.bodyValue }));
+      
     }
     _onCreateClick() {
-      fetch('https://jsonplaceholder.typicode.com/posts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: this.titleValue,
-        body: this.bodyValue,
-      }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Post created:', data);
+      const newPost = {title: this.titleValue, body: this.bodyValue};
+      this.dispatchEvent(new CustomEvent('post-change', { detail: newPost }));
+      console.log(newPost);
+      console.log(this.titleValue);
+        
         // Restablecer los valores de los inputs después de que el post haya sido creado
         this.titleValue = '';
       this.bodyValue = '';
-      })
+      
+      
+    }
+    _handlePostCreated(event) {
+      const post = event.detail;
+      const postsUI = document.querySelector('posts-ui');
+      postsUI.addPost(post);
     }
     _handleCancel() {
-      this.visible = false;
+      
       this.titleValue = '';
       this.bodyValue = '';
     }
   }
-  customElements.define('form-ui', MyForm);
+  customElements.define('form-component', MyForm);

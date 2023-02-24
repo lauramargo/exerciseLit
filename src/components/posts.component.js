@@ -2,7 +2,7 @@ import { html, LitElement } from "lit";
 import { AllPostsUseCase } from "../usecases/all-posts.usecase";
 import { OddPostsUseCase } from "../usecases/odd-posts.usecase";
 import './../ui/posts.ui';
-import './../ui/form.ui';
+import './form.component';
 
 export class PostsComponent extends LitElement {
 
