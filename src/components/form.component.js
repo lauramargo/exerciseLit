@@ -3,7 +3,7 @@ import '../ui/posts.ui';
 export class MyForm extends LitElement {
     static get properties() {
       return {
-        
+        selectedPost: { type: Object },
         titleValue: { type: String },
         bodyValue: { type: String },
         
@@ -11,9 +11,10 @@ export class MyForm extends LitElement {
     }
     constructor() {
       super();
-      
+      this.selectedPost = null;
       this.titleValue = '';
       this.bodyValue = '';
+      
       
     }
     static get styles() {
@@ -61,9 +62,9 @@ export class MyForm extends LitElement {
         <div class="formBox">
           <h2>Post Detail</h2>
           <label for="title-input">Title:</label>
-          <input class="formBox__text" type="text" id="title-input" placeholder="Titulo" .value="${this.titleValue}" @input="${this._handleTitleInput}"/>
+          <input class="formBox__text" type="text" id="title-input" placeholder="Titulo" .value="${this.selectedPost ? this.selectedPost.title : ''}" @input="${this._handleTitleInput}"/>
           <label for="body-input">Body:</label>
-          <input class="formBox__text" id="body-input" placeholder="descripción" .value="${this.bodyValue}" @input="${this._handleBodyInput}"/>
+          <input class="formBox__text" id="body-input" placeholder="descripción" .value="${this.selectedPost ? this.selectedPost.body : ''}" @input="${this._handleBodyInput}"/>
           <button class="formBox__btn" id="crear-btn" @click=${this._onCreateClick}>Crear</button>
           <button class="formBox__btn" id="cancelar-btn" @click=${this._handleCancel}>Cancelar</button>
           <button class="formBox__btn" id="borrar-btn" @click=${this._handleDelete}>Delete</button>
@@ -84,7 +85,7 @@ export class MyForm extends LitElement {
       console.log(newPost);
       console.log(this.titleValue);
         
-        // Restablecer los valores de los inputs después de que el post haya sido creado
+        
         this.titleValue = '';
       this.bodyValue = '';
       
