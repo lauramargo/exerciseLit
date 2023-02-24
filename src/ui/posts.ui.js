@@ -18,6 +18,13 @@ export class PostsUI extends LitElement {
   _onPostClick(post) {
     this.selectedPost = post;
   }
+  _onDeleteClick() {
+    const postIndex = this.posts.findIndex((post) => post.id === this.selectedPost.id);
+    if (postIndex !== -1) {
+      this.posts.splice(postIndex, 1);
+    }
+    this.selectedPost = null;
+  }
 
   render() {
     return html`
@@ -34,7 +41,7 @@ export class PostsUI extends LitElement {
                   id="post_${post.id}"
                 >
                   <a href="#" @click="${() => this._onPostClick(post)}">
-                    ${post.id}  ${post.title} ${post.body}
+                    ${post.id}  ${post.title} 
                   </a>
                 </li>
               `
@@ -46,6 +53,10 @@ export class PostsUI extends LitElement {
             .selectedPost="${this.selectedPost}"
             @post-change="${this.createPost}"
           ></form-component>
+          ${this.selectedPost &&
+          html`
+            <button class="formBox__btn" id="borrar-btn" @click="${this._onDeleteClick}">Delete</button>
+          `}
         </section>
       </div>
     `;

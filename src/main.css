@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(210, 207, 207);
+    background-color: rgb(181, 180, 180);
 }
 
 :root {
@@ -26,3 +26,33 @@ app-element p {
 display:flex;
 
 }
+.formBox__btn {
+    padding: 5px 5px;
+    color: white;
+      min-width: 100px;
+      background-color: var(--color-grey-dark-2);
+      border: 1px solid var(--color-grey);
+      border-radius: 1.5rem;
+      cursor: pointer;
+      font-size: var(--font-size-button);
+      line-height: var(--line-height-button);
+      box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+      margin-left: 222px;
+      
+      transform: translateY(-39px);
+  }
+  .btn:hover {
+      background-color: var(--color-primary);
+      color: var(--color-positive);
+    }
+  
+    .disabled-btn {
+      cursor: initial;
+      background-color: var(--color-grey-light-2);
+      color: var(--color-grey);
+    }
+  
+    .disabled-btn:hover {
+      background-color: var(--color-grey-light-2);
+      color: var(--color-grey);
+    } 

@@ -7,6 +7,7 @@ export class MyForm extends LitElement {
         titleValue: { type: String },
         bodyValue: { type: String },
         
+        
       };
     }
     constructor() {
@@ -67,7 +68,7 @@ export class MyForm extends LitElement {
           <input class="formBox__text" id="body-input" placeholder="descripción" .value="${this.selectedPost ? this.selectedPost.body : ''}" @input="${this._handleBodyInput}"/>
           <button class="formBox__btn" id="crear-btn" @click=${this._onCreateClick}>Crear</button>
           <button class="formBox__btn" id="cancelar-btn" @click=${this._handleCancel}>Cancelar</button>
-          <button class="formBox__btn" id="borrar-btn" @click=${this._handleDelete}>Delete</button>
+          
           </div>
       `;
     }
@@ -84,9 +85,8 @@ export class MyForm extends LitElement {
       this.dispatchEvent(new CustomEvent('post-change', { detail: newPost }));
       console.log(newPost);
       console.log(this.titleValue);
-        
-        
-        this.titleValue = '';
+      
+      this.titleValue = '';
       this.bodyValue = '';
       
       
@@ -100,6 +100,8 @@ export class MyForm extends LitElement {
       
       this.titleValue = '';
       this.bodyValue = '';
+      this.shadowRoot.querySelector('#title-input').value = '';
+      this.shadowRoot.querySelector('#body-input').value = '';
     }
   }
   customElements.define('form-component', MyForm);
